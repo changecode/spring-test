@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                        http://www.springframework.org/schema/aop    
+                        http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+	<!-- aspectj第一种采用xml配置方式 -->
+	<!-- <bean id="mytarget" class="com.spring.aop.Target" />
+
+	配置前置增强
+	 <bean id="myBeforeAdvice" class="com.spring.aop.BeforeAdvice" />
+
+	配置后置增强
+	<bean id="myAfterReturnAdvice" class="com.spring.aop.AfterAdvice" />
+
+	配置环绕增强
+	<bean id="myAroundAdvice" class="com.spring.aop.AroundAdvice" />
+
+	配置代理对象
+	<bean id="proxyFactoryBean" class="org.springframework.aop.framework.ProxyFactoryBean">
+		配置代理接口集
+		<property name="proxyInterfaces" value="com.spring.aop.Itarget" />
+		代理目标对象需要实现的接口，可以通过<list>标签设置多个, 把通知织入代理对象
+		<property name="interceptorNames">
+			<list>
+				<idref bean="myBeforeAdvice" />
+				<idref bean="myAfterReturnAdvice" />
+				<idref bean="myAroundAdvice" />
+			</list>
+		</property>
+		配置实现了Advice增强接口的Bean,以bean名字进行指定
+		<property name="targetName" value="mytarget"></property>代理的目标对象
+	</bean> -->
+	
+	<!-- aspectj第二种使用注解方式 -->
+	<!-- 使注解@AspectJ生效 -->
+	<aop:aspectj-autoproxy />
+	<!-- 配置前置增强 --><!-- 这里不用声明id,因为我们无须显示引用此bean，只需要注册让IOC容器识别并完成相关的AOP配置 -->
+	<bean class="com.spring.aspectjAnnotation.BeforeAdvice" />
+	<!-- 注册目标对象，方便在测试时调用 -->
+	<bean id="target" class="com.spring.aspectjAnnotation.Target" />
+
+</beans>
