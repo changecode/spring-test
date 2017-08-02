@@ -32,6 +32,15 @@
     <!-- 引入mybatis -->
     <bean id="xxxSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="xxxDataSource" />
+        <!-- 
+        		以下两个属性是专门为xml方式配置的，若只使用注解方式，这两个属性行可以不配置 
+	         <property name="configLocation" value="classpath:mybatis.xml"/>
+	         <property name="mapperLocations">
+	             <list>
+	                 <value>classpath*:mapper/admin/*Mapper.xml</value>
+	             </list>
+	         </property>
+         -->
     </bean>
     <bean id="xxxMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.xxx.mapper" />
