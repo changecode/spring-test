@@ -10,7 +10,10 @@
                         http://www.springframework.org/schema/mvc    
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
-
+	<!-- static resource filter config -->
+	<mvc:resources location="/WEB-INF/page/img/" mapping="/img/**"/>
+	<mvc:resources location="/WEB-INF/page/bootstrap/" mapping="/bootstrap/**"/>
+	
     <!-- 启用spring mvc 注解 -->
     <mvc:annotation-driven />
     
