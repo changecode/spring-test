@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+    xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+                        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <!-- p2p连接工厂 -->
+    <bean id="queueConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://127.0.0.1:61616" />
+        <!--异步模式-->
+        <property name="useAsyncSend" value="true" />
+    </bean>
+
+    <!-- 点对点消息目的地 -->
+    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="MY.queue" />
+    </bean>
+
+    <!-- P2P jms模板 -->
+    <bean id="queueJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory">
+            <!-- 也可使用org.springframework.jms.connection.SingleConnectionFactory -->
+            <bean class="org.springframework.jms.connection.CachingConnectionFactory">
+                <property name="targetConnectionFactory" ref="queueConnectionFactory" />
+            </bean>
+        </property>
+        <property name="defaultDestination" ref="queueDestination" />
+        <!-- 是否是发布订阅模式 -->
+        <property name="pubSubDomain" value="false" />
+        <!--<property name="messageConverter" ref="activeMQMessageConverter" />-->
+    </bean>
+
+    <!-- 消息转换器 -->
+    <bean id="activeMQMessageConverter" class="com.zb.activemq.ActiveMQMessageConverter" />
+
+    <!-- 消息消费者-->
+    <bean id="messageReceiver" class="com.zb.activemq.queue.QueueConsumer1"></bean>
+    <bean id="messageReceiver2" class="com.zb.activemq.queue.QueueConsumer2"></bean>
+
+    <bean id="queueReceiver3" class="com.zb.activemq.queue.QueueConsumer3" />
+    <bean id="messageReceiver3" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+        <constructor-arg ref="queueReceiver3" />
+        <property name="defaultListenerMethod" value="receive" />
+        <property name="messageConverter" ref="activeMQMessageConverter" />
+    </bean>
+    
+    <!--三个消息监听容器、只执行其中一个 -->
+    <!--<bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="queueDestination" />
+        <property name="messageListener" ref="messageReceiver" />
+    </bean>-->
+
+    <!--<bean id="listenerContainer2" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="queueDestination" />
+        <property name="messageListener" ref="messageReceiver2" />
+    </bean>-->
+    
+    <bean id="listenerContainer3" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="destination" ref="queueDestination" />
+        <property name="messageListener" ref="messageReceiver3" />
+    </bean>
+</beans>
